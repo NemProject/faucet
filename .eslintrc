@@ -1,0 +1,20 @@
+---
+extends:
+  - airbnb
+  - next/core-web-vitals
+  - plugin:@next/next/recommended
+  - ./default.eslintrc
+
+rules:
+  react/jsx-filename-extension:
+  - 1
+  - extensions:
+    - ".js"
+  react/jsx-props-no-spreading:
+  - off
+  react/jsx-indent:
+  - error
+  - tab
+  react/jsx-indent-props:
+  - error
+  - tab

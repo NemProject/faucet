@@ -22,33 +22,33 @@
  * @returns {data} resolved json data.
  */
 export const FetchPost = async (url, body, ...config) => {
-    const response = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8'
-        },
-        ...config
-    });
+	const response = await fetch(url, {
+		method: 'POST',
+		body: JSON.stringify(body),
+		headers: {
+			'Content-type': 'application/json; charset=UTF-8'
+		},
+		...config
+	});
 
-    if (!response.ok) {
-        const responseText = await response.text();
-        const msg = JSON.parse(responseText)
+	if (!response.ok) {
+		const responseText = await response.text();
+		const msg = JSON.parse(responseText);
 
-        return {
-            data: null,
-            error: {
-                url: response.url,
-                message: msg.error,
-                code: response.status,
-            }
-        }
-    }
+		return {
+			data: null,
+			error: {
+				url: response.url,
+				message: msg.error,
+				code: response.status
+			}
+		};
+	}
 
-    return {
-        data: await response.json(),
-    }
-}
+	return {
+		data: await response.json()
+	};
+};
 
 /**
  * GET method
@@ -57,29 +57,29 @@ export const FetchPost = async (url, body, ...config) => {
  * @returns {data} resolved json data.
  */
 export const FetchGet = async (url, ...config) => {
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        ...config
-    });
+	const response = await fetch(url, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		...config
+	});
 
-    if (!response.ok) {
-        const responseText = await response.text();
-        const msg = JSON.parse(responseText)
+	if (!response.ok) {
+		const responseText = await response.text();
+		const msg = JSON.parse(responseText);
 
-        return {
-            data: null,
-            error: {
-                url: response.url,
-                message: msg.error,
-                code: response.status,
-            }
-        }
-    }
+		return {
+			data: null,
+			error: {
+				url: response.url,
+				message: msg.error,
+				code: response.status
+			}
+		};
+	}
 
-    return {
-        data: await response.json(),
-    }
-}
+	return {
+		data: await response.json()
+	};
+};

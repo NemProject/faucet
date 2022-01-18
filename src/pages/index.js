@@ -14,153 +14,154 @@
  *
  */
 
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import { useState } from 'react'
-import { FetchPost } from '../services/fetch'
-import { getBalance } from '../services/nemRequest'
+import { FetchPost } from '../services/fetch';
+import { getBalance } from '../services/nemRequest';
+import styles from '../styles/Home.module.css';
+import Head from 'next/head';
+import Image from 'next/image';
+import { useState } from 'react';
 
-const Home = ({error, faucetAccount}) => {
+const Home = function ({ serverError, faucetAccount }) {
+	const [recipientAddress, setRecipientAddress] = useState('');
+	const [claimStatus, setClaimStatus] = useState({
+		isClickable: true,
+		status: '',
+		hashUrl: ''
+	});
 
-  const [address, setAddress] = useState('');
-  const [claimStatus, setClaimStatus] = useState({
-    isClickable: true,
-    status: '',
-    hashUrl: ''
-  });
+	const isAddressValid = address => {
+		const formattedAddress = address.toUpperCase().replace(/-/g, '');
 
-  const isAddressValid = (address) => {
-    const recipientAddress = address.toUpperCase().replace(/-/g, '');
+		if (!formattedAddress || 40 !== formattedAddress.length || 'T' !== formattedAddress[0])
+			return false;
 
-    if (!recipientAddress || recipientAddress.length !== 40 || recipientAddress[0] !== 'T') {
-      return false;
-    }
+		return true;
+	};
 
-    return true
-  }
+	const onHandleChange = e => {
+		setRecipientAddress(e.target.value);
+	};
 
-  const onHandleChange = (e) => {
-    setAddress(e.target.value);
-  }
+	const onHandleSubmit = async e => {
+		e.preventDefault();
 
-  const onHandleSubmit = async (e) => {
-    e.preventDefault();
+		setClaimStatus({
+			...claimStatus,
+			isDisabled: true,
+			status: 'Processing...',
+			hashUrl: ''
+		});
 
-    setClaimStatus({
-      ...claimStatus,
-      isDisabled: true,
-      status: 'Processing...',
-      hashUrl: ''
-    });
+		if (!isAddressValid(recipientAddress)) {
+			setClaimStatus({
+				status: 'Invalid recipient address',
+				isDisabled: false
+			});
 
-    if (!isAddressValid(address)) {
-      setClaimStatus({
-        status: 'Invalid recipient address',
-        isDisabled: false
-      })
+			return;
+		}
 
-      return;
-    }
+		try {
+			const { data, error } = await FetchPost('/api/claim', {
+				address: recipientAddress
+			});
 
-    try {
-      const { data, error } = await FetchPost("/api/claim", {
-        address: address
-      })
+			setClaimStatus({
+				...claimStatus,
+				isDisabled: false
+			});
 
-      setClaimStatus({
-        ...claimStatus,
-        isDisabled: false
-      })
+			if (!data) {
+				setClaimStatus({
+					...claimStatus,
+					status: error.message
+				});
+			} else {
+				setClaimStatus({
+					...claimStatus,
+					status: `Faucet is on the way to your wallet ${data.transactionHash}`,
+					hashUrl: `${process.env.NEXT_PUBLIC_EXPLORER}/#/s_tx?hash=${data.transactionHash}`
+				});
+			}
+		} catch (error) {
+			setClaimStatus({
+				...claimStatus,
+				status: 'Something went wrong, please try again later'
+			});
+		}
+	};
 
-      if (!data) {
-        setClaimStatus({
-          ...claimStatus,
-          status: error.message,
-        })
-      } else {
-        setClaimStatus({
-          ...claimStatus,
-          status: `Faucet is on the way to your wallet ${data.transactionHash}`,
-          hashUrl: `${process.env.NEXT_PUBLIC_EXPLORER}/#/s_tx?hash=${data.transactionHash}`,
-        })
-      }
-    } catch (error) {
-      console.log('onHandleSubmit error :>> ', error);
-      setClaimStatus({
-        ...claimStatus,
-        status: 'Something went wrong, please try again later',
-      })
-    }
-  }
+	if (serverError)
+		return (<div>{ serverError.message}</div>);
 
-  // Handle Error
-  if (error) {
-    return (<div> { error.message}</div>)
-  }
+	return (
+		<div className={styles.container}>
+			<Head>
+				<title>NEM Faucet</title>
+				<meta name="description" content="NEM Faucet" />
+				<link rel="icon" href="/favicon.ico" />
+			</Head>
 
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>NEM Faucet</title>
-        <meta name="description" content="NEM Faucet" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+			<main className={styles.main}>
+				<h1 className={styles.title}>NEM Faucet</h1>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          NEM Faucet
-        </h1>
+				<div>
+					<span>Faucet Address:</span>
+					<span>{ faucetAccount.address }</span>
+				</div>
 
-        <div>
-          Faucet Address: { faucetAccount.address }
-        </div>
+				<div>
+					Amount:
+					{ faucetAccount.balance }
+					{' '}
+					XEM
+				</div>
 
-        <div>Amount: { faucetAccount.balance } XEM</div>
+				<input type="text" value={recipientAddress} placeholder="NEM Address" onChange={onHandleChange} />
 
-        <input type='text' value={address} placeholder='NEM Address' onChange={onHandleChange}></input>
+				<button type="submit" disabled={claimStatus.isDisabled} onClick={onHandleSubmit}>Claim</button>
 
-        <button disabled={claimStatus.isDisabled} onClick={onHandleSubmit}>Claim</button>
+				{ claimStatus
+					? (
+						<div>
+							<a href={claimStatus.hashUrl}>{ claimStatus.status }</a>
+						</div>
+					) : null }
 
-        { claimStatus ? <div> <a href={claimStatus.hashUrl}> { claimStatus.status } </a></div> : null }
+			</main>
 
-      </main>
+			<footer className={styles.footer}>
+				<a
+					href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					Powered by
+					{' '}
+					<span className={styles.logo}>
+						<Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+					</span>
+				</a>
+			</footer>
+		</div>
+	);
+};
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
-  )
-}
+export const getServerSideProps = async () => {
+	try {
+		const { ...faucetAccount } = await getBalance(process.env.NEXT_PUBLIC_NEM_ADDRESS);
 
-export const getServerSideProps = async (context) =>{
-
-  try {
-    const { ...faucetAccount } = await getBalance(process.env.NEXT_PUBLIC_NEM_ADDRESS);
-
-    // Pass data to the page via props
-    return { props: { faucetAccount } }
-  } catch (error) {
-
-    console.error(error);
-
-    return {
-      props: {
-        error:{
-          message: error.message
-        }
-      }
-    }
-  }
-}
+		// Pass data to the page via props
+		return { props: { faucetAccount } };
+	} catch (error) {
+		return {
+			props: {
+				serverError: {
+					message: error.message
+				}
+			}
+		};
+	}
+};
 
 export default Home;

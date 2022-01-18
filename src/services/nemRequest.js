@@ -14,58 +14,55 @@
  *
  */
 
-import {FetchGet, FetchPost} from './fetch';
+import { FetchGet, FetchPost } from './fetch';
 
 const endpoint = 'http://hugetestalice.nem.ninja:7890';
 
 /**
  * Gets account balance.
  * @param {string} address - Account address.
- * @returns {Object} Balance - Account balance.
+ * @returns {object} Balance - Account balance.
  */
-export const getBalance = async (address) => {
-    const { data } = await FetchGet(`${endpoint}/account/get?address=${address}`);
+export const getBalance = async address => {
+	const { data } = await FetchGet(`${endpoint}/account/get?address=${address}`);
 
-    if (!data) {
-        throw new Error(`Can't get address balance ${address}`);
-    }
+	if (!data)
+		throw new Error(`Can't get address balance ${address}`);
 
-    return {
-       address: data.account.address,
-       balance: data.account.balance,
-    }
-}
+	return {
+		address: data.account.address,
+		balance: data.account.balance
+	};
+};
 
 /**
  * Announce payload to the network.
  * @param {string} payload - signed transaction payload.
- * @returns {Object} announce transaction status.
+ * @returns {object} announce transaction status.
  */
-export const announceTransaction = async (payload) => {
-    const { data } = await FetchPost(`${endpoint}/transaction/announce`, payload)
+export const announceTransaction = async payload => {
+	const { data } = await FetchPost(`${endpoint}/transaction/announce`, payload);
 
-    if (!data) {
-        throw new Error(`Can't announce transaction: ${payload}`);
-    }
+	if (!data)
+		throw new Error(`Can't announce transaction: ${payload}`);
 
-    return {
-        message: data.message,
-        transactionHash: data.transactionHash.data,
-    };
-}
+	return {
+		message: data.message,
+		transactionHash: data.transactionHash.data
+	};
+};
 
 /**
  * Gets timestamp from network.
- * @returns {Object} timestamp.
+ * @returns {object} timestamp.
  */
 export const getNetworkTime = async () => {
-    const { data } = await FetchGet(`${endpoint}/time-sync/network-time`)
+	const { data } = await FetchGet(`${endpoint}/time-sync/network-time`);
 
-    if (!data) {
-        throw new Error(`Can't get network time.`);
-    }
+	if (!data)
+		throw new Error('Can not get network time.');
 
-    return {
-        timestamp: data.sendTimeStamp,
-    };
-}
+	return {
+		timestamp: data.sendTimeStamp
+	};
+};

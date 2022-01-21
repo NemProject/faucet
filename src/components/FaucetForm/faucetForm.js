@@ -16,7 +16,9 @@
 
 import styles from './FaucetForm.module.scss';
 
-const Form = function ({ formInput, setFormInput, submitForm }) {
+const Form = function ({
+	formInput, setFormInput, submitForm, isButtonDisable
+}) {
 	const onHandleChange = event => {
 		setFormInput({
 			...formInput,
@@ -44,7 +46,14 @@ const Form = function ({ formInput, setFormInput, submitForm }) {
 				onChange={onHandleChange}
 			/>
 
-			<button className={styles.formButton} type="submit" onClick={e => submitForm(e)}>Claim</button>
+			<button
+				className={styles.formButton}
+				type="submit"
+				onClick={e => submitForm(e)}
+				disabled={isButtonDisable}
+			>
+				Claim
+			</button>
 		</div>
 	);
 };

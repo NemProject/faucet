@@ -29,6 +29,8 @@ const Home = function ({ serverError, faucetAccount }) {
 		hashUrl: ''
 	});
 
+	const [isButtonDisable, setIsButtonDisable] = useState(false);
+
 	const isAddressValid = address => {
 		const formattedAddress = address.toUpperCase().replace(/-/g, '');
 

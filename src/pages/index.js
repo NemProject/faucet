@@ -15,6 +15,7 @@
  */
 
 import nemLogo from '../assets/images/nem-logo.png';
+import Form from '../components/FaucetForm/faucetForm';
 import { FetchPost } from '../services/fetch';
 import { getBalance } from '../services/nemRequest';
 import styles from '../styles/Home.module.scss';
@@ -134,7 +135,13 @@ const Home = function ({ serverError, faucetAccount }) {
 								This faucet is running on the Symbol testnet and dispenses up to 10,000 XEM per account.
 							</p>
 						</div>
-					) : null }
+
+						<Form
+							formInput={formInput}
+							setFormInput={setFormInput}
+							submitForm={onHandleSubmit}
+							isButtonDisable={isButtonDisable}
+						/>
 
 						<p>Done with your XEM? Send it back to the faucet. Remember, sharing is caring!</p>
 

@@ -66,3 +66,17 @@ export const getNetworkTime = async () => {
 		timestamp: data.sendTimeStamp
 	};
 };
+
+/**
+ * Gets unconfirmed transactions from account.
+ * @param {string} address - Account address.
+ * @returns {Array} transactions.
+ */
+export const getUnconfirmedTransactions = async address => {
+	const { data } = await FetchGet(`${endpoint}/account/unconfirmedTransactions?address=${address}`);
+
+	if (!data)
+		throw new Error(`Can't get address balance ${address}`);
+
+	return data.data;
+};

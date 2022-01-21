@@ -15,6 +15,7 @@
  */
 
 import { getBalance, getNetworkTime, announceTransaction } from '../../services/nemRequest';
+import { toAbsoluteAmount, toRelativeAmount } from '../../utils/helper';
 import nemSDK from 'nem-sdk';
 
 /**
@@ -77,14 +78,18 @@ const transferXEM = async (address, amount) => {
 const claimHandler = async (req, res) => {
 	if ('POST' === req.method) {
 		const receiptAddress = req.body.address;
+		const transferAmount = toAbsoluteAmount((parseInt(req.body.amount, 10) || 0));
 		const faucetAddress = process.env.NEXT_PUBLIC_NEM_ADDRESS;
-		const sendAmount = process.env.NEXT_PUBLIC_SEND_AMOUNT;
-		const maxAmount = process.env.NEXT_PUBLIC_MAX_BALANCE;
+		const maxAmount = parseInt(process.env.NEXT_PUBLIC_MAX_BALANCE, 10);
+		const maxTransferAmount = parseInt(process.env.NEXT_PUBLIC_MAX_SEND_AMOUNT, 10);
 
 		try {
 			let error = '';
 			if (!nemSDK.model.address.isValid(receiptAddress))
-				error = 'Receipt address Invalid ';
+				error = 'Address Invalid ';
+
+			if (transferAmount >= maxTransferAmount)
+				error = `Transfer amount can not more than ${toRelativeAmount(maxTransferAmount)}`;
 
 			const [receiptBalance, faucetBalance] = await Promise.all([
 				getBalance(receiptAddress),
@@ -92,10 +97,10 @@ const claimHandler = async (req, res) => {
 			]);
 
 			if (receiptBalance.balance >= maxAmount)
-				error = 'Receipt address has reached max amount';
+				error = 'Your account already has enough balance.';
 
-			if (faucetBalance.balance < sendAmount)
-				error = 'Faucet address balance is not enough';
+			if (faucetBalance.balance < transferAmount)
+				error = 'Faucet balance not enough to pay out.';
 
 			// Todo: Check on Pending Tx
 
@@ -103,7 +108,7 @@ const claimHandler = async (req, res) => {
 				return res.status(400).json({ error });
 
 			// Announce Transfer Transaction
-			const result = await transferXEM(receiptAddress, sendAmount);
+			const result = await transferXEM(receiptAddress, transferAmount);
 
 			return res.status(200).json({ ...result });
 		} catch (error) {

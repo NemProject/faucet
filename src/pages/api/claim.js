@@ -14,7 +14,9 @@
  *
  */
 
-import { getBalance, getNetworkTime, announceTransaction } from '../../services/nemRequest';
+import {
+	getBalance, getNetworkTime, announceTransaction, getUnconfirmedTransactions
+} from '../../services/nemRequest';
 import { toAbsoluteAmount, toRelativeAmount } from '../../utils/helper';
 import nemSDK from 'nem-sdk';
 
@@ -91,9 +93,10 @@ const claimHandler = async (req, res) => {
 			if (transferAmount >= maxTransferAmount)
 				error = `Transfer amount can not more than ${toRelativeAmount(maxTransferAmount)}`;
 
-			const [receiptBalance, faucetBalance] = await Promise.all([
+			const [receiptBalance, faucetBalance, unconfirmedTransactions] = await Promise.all([
 				getBalance(receiptAddress),
-				getBalance(faucetAddress)
+				getBalance(faucetAddress),
+				getUnconfirmedTransactions(faucetAddress)
 			]);
 
 			if (receiptBalance.balance >= maxAmount)
@@ -102,7 +105,10 @@ const claimHandler = async (req, res) => {
 			if (faucetBalance.balance < transferAmount)
 				error = 'Faucet balance not enough to pay out.';
 
-			// Todo: Check on Pending Tx
+			const pendingTx = unconfirmedTransactions.filter(item => item.transaction.recipient === receiptAddress);
+
+			if (0 < pendingTx.length)
+				error = 'You have pending transaction, please wait for it to be confirmed.';
 
 			if ('' !== error)
 				return res.status(400).json({ error });

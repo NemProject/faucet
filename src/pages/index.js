@@ -14,9 +14,10 @@
  *
  */
 
+import nemLogo from '../assets/images/nem-logo.png';
 import { FetchPost } from '../services/fetch';
 import { getBalance } from '../services/nemRequest';
-import styles from '../styles/Home.module.css';
+import styles from '../styles/Home.module.scss';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -97,54 +98,58 @@ const Home = function ({ serverError, faucetAccount }) {
 		return (<div>{ serverError.message}</div>);
 
 	return (
-		<div className={styles.container}>
+		<div>
 			<Head>
 				<title>NEM Faucet</title>
 				<meta name="description" content="NEM Faucet" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<main className={styles.main}>
-				<h1 className={styles.title}>NEM Faucet</h1>
-
-				<div>
-					<span>Faucet Address:</span>
-					<span>{ faucetAccount.address }</span>
+			<div>
+				<div className={styles.bgContainer}>
+					<div className={styles.bgArtContainer}>
+						<div className={styles.bgImageLeft} />
+						<div className={styles.bgArtMiddle} />
+						<div className={styles.bgImageRight} />
+					</div>
 				</div>
+				<div className={styles.mainContainerWrapper}>
+					<div className={styles.mainContainer}>
+						<Image
+							src={nemLogo}
+							alt="nem Logo"
+							width={62}
+							height={62}
+						/>
 
-				<div>
-					Amount:
-					{ faucetAccount.balance }
-					{' '}
-					XEM
-				</div>
+						<h1 className={styles.title}>NEM Faucet</h1>
 
-				<input type="text" value={recipientAddress} placeholder="NEM Address" onChange={onHandleChange} />
+						<span className={styles.address}>{ faucetAccount.address }</span>
 
-				<button type="submit" disabled={claimStatus.isDisabled} onClick={onHandleSubmit}>Claim</button>
-
-				{ claimStatus
-					? (
-						<div>
-							<a href={claimStatus.hashUrl}>{ claimStatus.status }</a>
+						<div className={styles.textDescription}>
+							<p>
+								Thirsty? Take a drink.
+								{' '}
+								<br />
+								This faucet is running on the Symbol testnet and dispenses up to 10,000 XEM per account.
+							</p>
 						</div>
 					) : null }
 
-			</main>
+						<p>Done with your XEM? Send it back to the faucet. Remember, sharing is caring!</p>
 
-			<footer className={styles.footer}>
-				<a
-					href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Powered by
-					{' '}
-					<span className={styles.logo}>
-						<Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-					</span>
-				</a>
-			</footer>
+						<p>
+							If you’re looking to set up a voting node on Symbol (minimum 3,000,000 XEM), please send a request to
+							<a target="_blank" href="https://t.me/nemhelpdesk" rel="noreferrer">@nemhelpdesk</a>
+							{' '}
+							on Telegram, or
+							<a target="_blank" href="https://discord.com/invite/gKDHkNBRhn" rel="noreferrer">#helpdesk</a>
+							{' '}
+							on Discord.
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 };

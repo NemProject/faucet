@@ -16,6 +16,7 @@
 
 import nemLogo from '../assets/images/nem-logo.png';
 import Form from '../components/FaucetForm/faucetForm';
+import Footer from '../components/Footer/footer';
 import { FetchPost } from '../services/fetch';
 import { getBalance } from '../services/nemRequest';
 import styles from '../styles/Home.module.scss';
@@ -161,13 +162,15 @@ const Home = function ({ serverError, faucetAccount }) {
 
 						<p>
 							If you’re looking to set up a voting node on Symbol (minimum 3,000,000 XEM), please send a request to
-							<a target="_blank" href="https://t.me/nemhelpdesk" rel="noreferrer">@nemhelpdesk</a>
+							<a target="_blank" href="https://t.me/nemhelpdesk" rel="noreferrer"> @nemhelpdesk</a>
 							{' '}
 							on Telegram, or
-							<a target="_blank" href="https://discord.com/invite/gKDHkNBRhn" rel="noreferrer">#helpdesk</a>
+							<a target="_blank" href="https://discord.com/invite/gKDHkNBRhn" rel="noreferrer"> #helpdesk</a>
 							{' '}
 							on Discord.
 						</p>
+
+						<Footer />
 					</div>
 				</div>
 			</div>

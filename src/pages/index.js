@@ -22,13 +22,30 @@ import styles from '../styles/Home.module.scss';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// Setup toast
+toast.configure();
+
+const ViewExplorerLink = function (transactionHash) {
+	return (
+		<div>
+			<a
+				target="_blank"
+				href={`${process.env.NEXT_PUBLIC_EXPLORER}/#/s_tx?hash=${transactionHash}`}
+				rel="noreferrer"
+			>
+				View transaction in explorer.
+			</a>
+		</div>
+	);
+};
 
 const Home = function ({ serverError, faucetAccount }) {
-	const [recipientAddress, setRecipientAddress] = useState('');
-	const [claimStatus, setClaimStatus] = useState({
-		isClickable: true,
-		status: '',
-		hashUrl: ''
+	const [formInput, setFormInput] = useState({
+		recipientAddress: '',
+		amount: ''
 	});
 
 	const [isButtonDisable, setIsButtonDisable] = useState(false);
@@ -42,57 +59,54 @@ const Home = function ({ serverError, faucetAccount }) {
 		return true;
 	};
 
-	const onHandleChange = e => {
-		setRecipientAddress(e.target.value);
-	};
-
 	const onHandleSubmit = async e => {
 		e.preventDefault();
+		const { recipientAddress, amount } = formInput;
 
-		setClaimStatus({
-			...claimStatus,
-			isDisabled: true,
-			status: 'Processing...',
-			hashUrl: ''
-		});
+		if (0 === recipientAddress.length || 0 === amount.length) {
+			toast.warn('Address and amount can not be empty', { autoClose: 10000 });
+			return;
+		}
+
+		toast.info('Processing...', { autoClose: 10000 });
+
+		setIsButtonDisable(true);
 
 		if (!isAddressValid(recipientAddress)) {
-			setClaimStatus({
-				status: 'Invalid recipient address',
-				isDisabled: false
-			});
+			toast.warn('Invalid recipient address', { autoClose: 10000 });
+
+			setIsButtonDisable(false);
+
+			return;
+		}
+
+		if (amount >= process.env.NEXT_PUBLIC_MAX_SEND_AMOUNT) {
+			toast.warn('Transfer amount is too large', { autoClose: 10000 });
+
+			setIsButtonDisable(false);
 
 			return;
 		}
 
 		try {
 			const { data, error } = await FetchPost('/api/claim', {
-				address: recipientAddress
-			});
-
-			setClaimStatus({
-				...claimStatus,
-				isDisabled: false
+				address: recipientAddress,
+				amount
 			});
 
 			if (!data) {
-				setClaimStatus({
-					...claimStatus,
-					status: error.message
-				});
-			} else {
-				setClaimStatus({
-					...claimStatus,
-					status: `Faucet is on the way to your wallet ${data.transactionHash}`,
-					hashUrl: `${process.env.NEXT_PUBLIC_EXPLORER}/#/s_tx?hash=${data.transactionHash}`
-				});
+				toast.error(error.message, { autoClose: 10000 });
+				setIsButtonDisable(false);
+				return;
 			}
+
+			toast.success('Your request is being processed.', { autoClose: false });
+			toast.success(ViewExplorerLink(data.transactionHash), { autoClose: false });
 		} catch (error) {
-			setClaimStatus({
-				...claimStatus,
-				status: 'Something went wrong, please try again later'
-			});
+			toast.error('Something went wrong, please try again later', { autoClose: 10000 });
 		}
+
+		setIsButtonDisable(false);
 	};
 
 	if (serverError)

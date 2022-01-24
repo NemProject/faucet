@@ -147,7 +147,7 @@ const Home = function ({ serverError, faucetAccount }) {
 								Thirsty? Take a drink.
 								{' '}
 								<br />
-								This faucet is running on the Symbol testnet and dispenses up to 10,000 XEM per account.
+								This faucet is running on the NEM testnet and dispenses up to 10,000 XEM per account.
 							</p>
 						</div>
 
@@ -161,7 +161,7 @@ const Home = function ({ serverError, faucetAccount }) {
 						<p>Done with your XEM? Send it back to the faucet. Remember, sharing is caring!</p>
 
 						<p>
-							If you’re looking to set up a voting node on Symbol (minimum 3,000,000 XEM), please send a request to
+							If you have more questions, please send a request to
 							<a target="_blank" href="https://t.me/nemhelpdesk" rel="noreferrer"> @nemhelpdesk</a>
 							{' '}
 							on Telegram, or

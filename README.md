@@ -1,34 +1,61 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## :potable_water: Nem Faucet
 
-## Getting Started
+Nem Faucet is a simple web application it allow user to request [testnet](https://testnet-explorer.nemtool.com) XEM for development, it build on [Next.js](https://nextjs.org/docs).
 
-First, run the development server:
+## Requirement
+- Node.js 12.22.0 or later
 
-```bash
-npm run dev
-# or
-yarn dev
+## Installation
+
+1. Clone the project.
+
+```
+git clone https://github.com/NemProject/faucet.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install the required dependencies.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```
+cd faucet
+npm install
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Development
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+1. Create `.env.local` in root directory.
+```env
+NEM_PRIVATE_KEY=<faucet_private_key>
+NEXT_PUBLIC_NEM_ADDRESS=<faucet_address>
+NEXT_PUBLIC_MAX_BALANCE=<max_balance> // max recipient balance eg: 200000000 (200 XEM)
+NEXT_PUBLIC_MAX_SEND_AMOUNT=<max_send_amount> max send out amount. eg 500000000 (500 XEM)
+NEXT_PUBLIC_EXPLORER=<testnet_explorer_url>
+NEXT_PUBLIC_DIVISIBILITY=6
+```
 
-## Learn More
+2. running in development
+```
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+3. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Building instructions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```
+npm run build
+```
 
-## Deploy on Vercel
+## Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Before contributing please [read the CONTRIBUTING instructions](CONTRIBUTING.md).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Getting Help
+
+- [NEM Developer Documentation](https://nemproject.github.io/nem-docs).
+- [NEM Technical Reference](https://nemproject.github.io/nem-docs/pages/Whitepapers/NEM_techRef.pdf).
+- Join the community [Discord server](https://discord.gg/xymcity).
+- If you found a bug, [open a new issue](https://github.com/NemProject/faucet/issues).
+
+## License
+
+Copyright (c) 2014-2022 NEM Contributors, licensed under the [MIT license](LICENSE).

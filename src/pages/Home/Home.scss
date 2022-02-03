@@ -1,0 +1,131 @@
+/*
+ * (C) Symbol Contributors 2021
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations under the License.
+ *
+ */
+
+@import '../../styles/variables';
+
+.title a {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.title a:hover,
+.title a:focus,
+.title a:active {
+  text-decoration: underline;
+}
+
+.title,
+.address {
+  color: #679790;
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 40px;
+  font-family: 'Abhaya Libre';
+  text-transform: uppercase;
+  color: #679790;
+}
+
+.title,
+.description {
+  text-align: center;
+}
+
+.description {
+  margin: 4rem 0;
+  line-height: 1.5;
+  font-size: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .grid {
+    width: 100%;
+    flex-direction: column;
+  }
+}
+
+.bgContainer {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-position: center;
+  background-size: cover;
+  background-color: var(--color-lightmode-button-bg);
+}
+
+.mainContainer {
+  width: 100%;
+  max-width: 600px;
+  padding: 80px 20px;
+  margin: auto;
+  position: relative;
+  text-align: center;
+}
+
+.mainContainerWrapper {
+  overflow-y: auto;
+  position: relative;
+}
+
+.bgArtContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 720px auto;
+}
+
+.bgImage {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+}
+
+.bgArtMiddle {
+  background: url('../../assets/images/bg-grey.png') no-repeat center;
+}
+
+.bgImageLeft {
+  background: url('../../assets/images/bg-water-color.png');
+  background-position: 100% 25%;
+  position: relative;
+}
+
+.bgImageRight {
+  background: url('../../assets/images/bg-water-color.png');
+  background-position: 0% 25%;
+  position: relative;
+}
+
+.textDescription {
+  text-align: center;
+  position: relative;
+  margin-bottom: 10px;
+  overflow: visible;
+}
+
+@media #{$screen-tablet-lg}, #{$screen-tablet-sm}, #{$screen-mobile} {
+  .bgArtContainer {
+      grid-template-columns: auto 750px auto;
+  }
+  .mainContainer {
+      max-width: 450px;
+  }
+}

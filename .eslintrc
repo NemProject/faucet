@@ -17,3 +17,7 @@ rules:
   react/jsx-indent-props:
   - error
   - tab
+  no-console:
+  - error
+  - allow:
+    - error
